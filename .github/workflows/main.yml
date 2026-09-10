@@ -27,7 +27,7 @@ jobs:
         key: buildozer-global-${{ hashFiles('buildozer.spec') }}-${{ steps.get-date.outputs.date }}
 
     - name: Build with Buildozer
-      uses: ArtemSanya/buildozer-action@v1
+      uses: ArtemBulgakov/buildozer-action@v1
       with:
         workdir: .
         buildozer_version: stable
