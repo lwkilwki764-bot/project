@@ -1,0 +1,23 @@
+[project]
+name = "baqiyat_salihat"
+version = "1.0.0"
+description = "تطبيق مؤسسة الباقيات الصالحات للخدمات الدينية"
+authors = [{ name = "Baqiyat Foundation", email = "info@baqiyat.org" }]
+dependencies = [
+    "flet>=0.22.0",
+]
+
+[tool.flet]
+org = "org.baqiyat"
+product = "الباقيات الصالحات"
+app_name = "baqiyat_salihat"
+app_title = "تطبيق مؤسسة الباقيات الصالحات"
+
+[tool.flet.android]
+permissions = [
+    "INTERNET",
+    "ACCESS_FINE_LOCATION",
+    "VIBRATE"
+]
+build_number = 100
+build_version = "1.0.0"

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق مؤسسة الباقيات الصالحات</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0C3B2E;
+            --primary-light: #155241;
+            --accent: #D4AF37;
+            --accent-light: #F4E07B;
+            --bg-dark: #091D17;
+            --surface: #122A22;
+            --text-main: #F9F6F0;
+            --text-muted: #B0C4BC;
+            --card-border: #1E473A;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Mobile App Frame */
+        .app-container {
+            width: 100%;
+            max-width: 440px;
+            height: 100vh;
+            max-height: 880px;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+
+        @media (min-width: 500px) {
+            .app-container {
+                height: 92vh;
+                border-radius: 28px;
+            }
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, var(--primary) 0%, var(--surface) 100%);
+            padding: 24px 20px 16px 20px;
+            border-bottom: 1px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-family: 'Amiri', serif;
+            font-size: 20px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-title p {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .user-badge {
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid var(--accent);
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-light) transparent;
+        }
+
+        /* Views */
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Service Cards */
+        .service-card {
+            background: var(--surface);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 14px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card.subscribed {
+            border-color: var(--accent);
+        }
+
+        .service-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .service-icon-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .service-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 18px;
+        }
+
+        .service-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .badge {
+            background: var(--primary-light);
+            color: var(--accent);
+            font-size: 10px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .badge.active {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .service-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: var(--accent-light);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        /* Tasbeeh Counter Circle */
+        .tasbeeh-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .phrase-box {
+            background: var(--surface);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-main);
+            margin-bottom: 24px;
+        }
+
+        .counter-btn {
+            width: 190px;
+            height: 190px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--primary), var(--surface));
+            border: 4px solid var(--accent);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+
+        .counter-btn:active {
+            transform: scale(0.95);
+        }
+
+        .counter-num {
+            font-size: 52px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .counter-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Login Form */
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--surface);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: var(--accent);
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background: var(--surface);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 11px;
+            cursor: pointer;
+            text-decoration: none;
+            width: 25%;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        .nav-item i {
+            font-size: 18px;
+        }
+
+        /* Toast */
+        .toast {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 100;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Toast -->
+        <div id="toast" class="toast">تم الإجراء بنجاح</div>
+
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">
+                <h1><i class="fa-solid fa-mosque"></i> الباقيات الصالحات</h1>
+                <p>مؤسسة أ.د. عبلة الكحلاوي الخيرية</p>
+            </div>
+            <div class="user-badge" onclick="switchNav('login')">
+                <i class="fa-solid fa-user"></i>
+                <span id="user-name-display">حسابي</span>
+            </div>
+        </div>
+
+        <!-- Content Views -->
+        <div class="content">
+
+            <!-- 1. Home / Services View -->
+            <div id="view-home" class="view active">
+                <h2 style="font-size: 16px; color: var(--accent); margin-bottom: 4px;">خدمات المؤسسة الدينية والاشتراكات</h2>
+                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 14px;">تصفح واشترك في الأقسام الدينية السبعة لدعم أعمال البر والرعاية:</p>
+                <div id="services-container"></div>
+            </div>
+
+            <!-- 2. Tasbeeh View -->
+            <div id="view-tasbeeh" class="view">
+                <div class="tasbeeh-container">
+                    <h2 style="font-size: 18px; color: var(--accent); margin-bottom: 16px;">المسبحة والورد الذكي</h2>
+                    <div class="phrase-box" id="current-phrase">سُبْحَانَ اللَّهِ وَبِحَمْدِهِ</div>
+                    
+                    <div class="counter-btn" onclick="incCounter()">
+                        <div class="counter-num" id="counter-val">0</div>
+                        <div class="counter-label">اضغط للتسبيح</div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 24px;">
+                        <button class="btn btn-outline" onclick="nextPhrase()"><i class="fa-solid fa-rotate"></i> الذكر التالي</button>
+                        <button class="btn btn-outline" onclick="resetCounter()"><i class="fa-solid fa-arrow-rotate-left"></i> إعادة</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Foundation View -->
+            <div id="view-foundation" class="view">
+                <div class="service-card" style="border-color: var(--accent);">
+                    <h3 style="color: var(--accent); margin-bottom: 8px;"><i class="fa-solid fa-hands-holding-child"></i> عن مؤسسة الباقيات الصالحات</h3>
+                    <p class="service-desc">تأسست بواسطة الدكتورة عبلة الكحلاوي -رحمها الله- لتقديم الرعاية الطبية والإنسانية المجانية لمرضى الزهايمر والسرطان والأيتام.</p>
+                </div>
+
+                <h3 style="font-size: 14px; color: var(--text-main); margin: 16px 0 10px 0;">مشاريع التبرع الحالية:</h3>
+                
+                <div class="service-card">
+                    <div style="font-size: 13px; font-weight: bold; color: var(--accent);">مستشفى الزهايمر المجاني</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 70%;"></div></div>
+                    <div style="font-size: 11px; color: var(--text-muted);">جمع 342,000 $ من أصل 500,000 $</div>
+                </div>
+
+                <div class="service-card">
+                    <div style="font-size: 13px; font-weight: bold; color: var(--accent);">دار مرضى السرطان والأيتام</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 85%;"></div></div>
+                    <div style="font-size: 11px; color: var(--text-muted);">جمع 580,000 $ من أصل 750,000 $</div>
+                </div>
+
+                <button class="btn" style="width: 100%; justify-content: center; padding: 14px;" onclick="showToast('شكراً لمساهمتك الكريمة!')">
+                    <i class="fa-solid fa-heart"></i> تبرّع أو اكفل مريض الآن
+                </button>
+            </div>
+
+            <!-- 4. Login View -->
+            <div id="view-login" class="view">
+                <div style="text-align: center; padding: 20px 0;">
+                    <i class="fa-solid fa-shield-halved" style="font-size: 48px; color: var(--accent); margin-bottom: 12px;"></i>
+                    <h2 style="font-size: 18px; color: var(--text-main);">تسجيل الدخول / إنشاء حساب</h2>
+                </div>
+
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="input-name" class="form-input" placeholder="أدخل اسمك الكامل">
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني / رقم الهاتف</label>
+                    <input type="text" id="input-email" class="form-input" placeholder="example@mail.com">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="input-pass" class="form-input" placeholder="••••••••">
+                </div>
+
+                <button class="btn" style="width: 100%; justify-content: center; padding: 14px; margin-top: 10px;" onclick="doLogin()">
+                    <i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول الآن
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <div class="nav-item active" onclick="switchNav('home')">
+                <i class="fa-solid fa-house"></i>
+                <span>الرئيسية</span>
+            </div>
+            <div class="nav-item" onclick="switchNav('tasbeeh')">
+                <i class="fa-solid fa-fingerprint"></i>
+                <span>المسبحة</span>
+            </div>
+            <div class="nav-item" onclick="switchNav('foundation')">
+                <i class="fa-solid fa-hand-holding-heart"></i>
+                <span>المؤسسة</span>
+            </div>
+            <div class="nav-item" onclick="switchNav('login')">
+                <i class="fa-solid fa-user-gear"></i>
+                <span>حسابي</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const services = [
+            { id: 1, title: "قسم الأذكار والتتبع اليومي", desc: "أذكار الصباح والمساء واليوم مع متابعة نسبة الإنجاز والعدادات", price: "$2.99/شهرياً", icon: "fa-book-bookmark", isSub: true },
+            { id: 2, title: "قسم المسبحة والورد الذكي", desc: "مسبحة تفاعلية مع حفظ سجل التسبيحات اليومية والأهداف", price: "$1.99/شهرياً", icon: "fa-fingerprint", isSub: true },
+            { id: 3, title: "قسم مواقيت الصلاة والأذان", desc: "حساب دقيق للأوقات وبوصلة القبلة وتنبيهات الأذان بصوت نقي", price: "$3.99/شهرياً", icon: "fa-clock", isSub: false },
+            { id: 4, title: "قسم القرآن الكريم وختمات المجموعات", desc: "المصحف العثماني والتلاوات وإمكانية المشاركة في ختمات جماعية", price: "$4.99/شهرياً", icon: "fa-book-quran", isSub: false },
+            { id: 5, title: "قسم الاستشارات الدينية والشرعية", desc: "إرسال الاستشارات والأسئلة لعلماء متخصصين وتصفح الفتاوى", price: "$5.99/شهرياً", icon: "fa-comments", isSub: false },
+            { id: 6, title: "قسم الدروس والمحاضرات الإيمانية", desc: "مكتبة المحاضرات والدروس الصوتية للعلماء مع التنزيل", price: "$3.49/شهرياً", icon: "fa-circle-play", isSub: false },
+            { id: 7, title: "قسم الصدقات وكفالة المرضى", desc: "خدمات التبرع لمشاريع المؤسسة لرعاية الزهايمر والسرطان", price: "مجاني للجميع", icon: "fa-hand-holding-dollar", isSub: true }
+        ];
+
+        const phrases = [
+            "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+            "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+            "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ",
+            "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
+            "لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ العَلِيِّ العَظِيمِ"
+        ];
+        let currentPhraseIdx = 0;
+        let counterVal = 0;
+
+        function renderServices() {
+            const container = document.getElementById('services-container');
+            container.innerHTML = services.map(s => `
+                <div class="service-card ${s.isSub ? 'subscribed' : ''}">
+                    <div class="service-card-header">
+                        <div class="service-icon-title">
+                            <div class="service-icon"><i class="fa-solid ${s.icon}"></i></div>
+                            <div class="service-title">${s.title}</div>
+                        </div>
+                        <span class="badge ${s.isSub ? 'active' : ''}">${s.isSub ? 'مشترَك' : 'متاح'}</span>
+                    </div>
+                    <div class="service-desc">${s.desc}</div>
+                    <div class="service-footer">
+                        <span class="price">${s.price}</span>
+                        <button class="btn ${s.isSub ? '' : 'btn-outline'}" onclick="toggleSub(${s.id})">
+                            ${s.isSub ? '<i class="fa-solid fa-circle-check"></i> دخول الخدمة' : '<i class="fa-solid fa-plus"></i> اشترك الآن'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleSub(id) {
+            const s = services.find(x => x.id === id);
+            if (s) {
+                if (s.isSub) {
+                    if (id === 2) switchNav('tasbeeh');
+                    else if (id === 7) switchNav('foundation');
+                    else showToast(`أهلاً بك في ${s.title}`);
+                } else {
+                    s.isSub = true;
+                    showToast(`تم تفعيل اشتراكك بنجاح في ${s.title}`);
+                    renderServices();
+                }
+            }
+        }
+
+        function switchNav(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            const targetView = document.getElementById(`view-${viewName}`);
+            if (targetView) targetView.classList.add('active');
+
+            const navItems = document.querySelectorAll('.nav-item');
+            if (viewName === 'home') navItems[0].classList.add('active');
+            if (viewName === 'tasbeeh') navItems[1].classList.add('active');
+            if (viewName === 'foundation') navItems[2].classList.add('active');
+            if (viewName === 'login') navItems[3].classList.add('active');
+        }
+
+        function incCounter() {
+            counterVal++;
+            document.getElementById('counter-val').innerText = counterVal;
+            if (counterVal % 33 === 0) showToast(`تقبل الله! أكملت ${counterVal} تسبيحة`);
+        }
+
+        function resetCounter() {
+            counterVal = 0;
+            document.getElementById('counter-val').innerText = 0;
+        }
+
+        function nextPhrase() {
+            currentPhraseIdx = (currentPhraseIdx + 1) % phrases.length;
+            document.getElementById('current-phrase').innerText = phrases[currentPhraseIdx];
+        }
+
+        function doLogin() {
+            const name = document.getElementById('input-name').value || "أحمد المحمدي";
+            document.getElementById('user-name-display').innerText = name;
+            showToast(`أهلاً بك يا ${name}! تم تسجيل الدخول بنجاح`);
+            switchNav('home');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        // Init
+        renderServices();
+    </script>
+</body>
+</html>
